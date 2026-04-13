@@ -1,176 +1,157 @@
-// Navigation Toggle for Mobile
-const navToggle = document.getElementById('navToggle');
-const navMenu = document.getElementById('navMenu');
+const navToggle = document.getElementById("navToggle");
+const navMenu = document.getElementById("navMenu");
+const navbar = document.querySelector(".navbar");
+const hero = document.querySelector(".hero");
+const sections = document.querySelectorAll("section[id]");
+const navLinks = document.querySelectorAll('.nav-menu a[href^="#"]');
 
-navToggle.addEventListener('click', () => {
-    navMenu.classList.toggle('active');
-    
-    // Animate hamburger icon
-    const spans = navToggle.querySelectorAll('span');
-    spans[0].style.transform = navMenu.classList.contains('active') ? 'rotate(45deg) translate(5px, 5px)' : 'none';
-    spans[1].style.opacity = navMenu.classList.contains('active') ? '0' : '1';
-    spans[2].style.transform = navMenu.classList.contains('active') ? 'rotate(-45deg) translate(7px, -6px)' : 'none';
-});
+if (navToggle && navMenu) {
+    navToggle.addEventListener("click", () => {
+        navMenu.classList.toggle("active");
+        navToggle.classList.toggle("open");
 
-// Close mobile menu when clicking on a link
-const navLinks = document.querySelectorAll('.nav-menu a');
-navLinks.forEach(link => {
-    link.addEventListener('click', () => {
-        navMenu.classList.remove('active');
-        
-        // Reset hamburger icon
-        const spans = navToggle.querySelectorAll('span');
-        spans[0].style.transform = 'none';
-        spans[1].style.opacity = '1';
-        spans[2].style.transform = 'none';
-    });
-});
+        const spans = navToggle.querySelectorAll("span");
+        const isActive = navMenu.classList.contains("active");
 
-// Navbar scroll effect
-let lastScroll = 0;
-const navbar = document.querySelector('.navbar');
-
-window.addEventListener('scroll', () => {
-    const currentScroll = window.pageYOffset;
-    
-    // Add shadow on scroll
-    if (currentScroll > 50) {
-        navbar.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.15)';
-    } else {
-        navbar.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.1)';
-    }
-    
-    lastScroll = currentScroll;
-});
-
-// Active navigation link highlighting
-const sections = document.querySelectorAll('section[id]');
-
-const highlightNavigation = () => {
-    const scrollY = window.pageYOffset;
-    
-    sections.forEach(section => {
-        const sectionHeight = section.offsetHeight;
-        const sectionTop = section.offsetTop - 100;
-        const sectionId = section.getAttribute('id');
-        const navLink = document.querySelector(`.nav-menu a[href="#${sectionId}"]`);
-        
-        if (scrollY > sectionTop && scrollY <= sectionTop + sectionHeight) {
-            navLink?.classList.add('active');
-        } else {
-            navLink?.classList.remove('active');
+        if (spans.length === 3) {
+            spans[0].style.transform = isActive ? "translateY(7.5px) rotate(45deg)" : "none";
+            spans[1].style.opacity = isActive ? "0" : "1";
+            spans[2].style.transform = isActive ? "translateY(-7.5px) rotate(-45deg)" : "none";
         }
     });
-};
 
-window.addEventListener('scroll', highlightNavigation);
+    navLinks.forEach((link) => {
+        link.addEventListener("click", () => {
+            navMenu.classList.remove("active");
+            navToggle.classList.remove("open");
 
-// Smooth scroll for anchor links (backup for browsers that don't support CSS smooth scroll)
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        
-        if (target) {
-            const offsetTop = target.offsetTop - 70;
-            window.scrollTo({
-                top: offsetTop,
-                behavior: 'smooth'
-            });
-        }
-    });
-});
-
-// Intersection Observer for fade-in animations
-const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
-};
-
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.style.opacity = '1';
-            entry.target.style.transform = 'translateY(0)';
-        }
-    });
-}, observerOptions);
-
-// Apply animation to timeline items and cards
-const animatedElements = document.querySelectorAll('.timeline-item, .education-card, .course-card, .publication-item, .contact-item');
-animatedElements.forEach(el => {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(20px)';
-    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-    observer.observe(el);
-});
-
-// Scroll to top button (optional - can be added to HTML if needed)
-const createScrollTopButton = () => {
-    const button = document.createElement('button');
-    button.innerHTML = '↑';
-    button.className = 'scroll-top-btn';
-    button.style.cssText = `
-        position: fixed;
-        bottom: 30px;
-        right: 30px;
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        background-color: var(--primary-color);
-        color: white;
-        border: none;
-        font-size: 24px;
-        cursor: pointer;
-        opacity: 0;
-        visibility: hidden;
-        transition: all 0.3s ease;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        z-index: 999;
-    `;
-    
-    document.body.appendChild(button);
-    
-    window.addEventListener('scroll', () => {
-        if (window.pageYOffset > 300) {
-            button.style.opacity = '1';
-            button.style.visibility = 'visible';
-        } else {
-            button.style.opacity = '0';
-            button.style.visibility = 'hidden';
-        }
-    });
-    
-    button.addEventListener('click', () => {
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
+            const spans = navToggle.querySelectorAll("span");
+            if (spans.length === 3) {
+                spans[0].style.transform = "none";
+                spans[1].style.opacity = "1";
+                spans[2].style.transform = "none";
+            }
         });
-    });
-    
-    button.addEventListener('mouseenter', () => {
-        button.style.transform = 'scale(1.1)';
-    });
-    
-    button.addEventListener('mouseleave', () => {
-        button.style.transform = 'scale(1)';
-    });
-};
-
-// Initialize scroll to top button
-createScrollTopButton();
-
-// Add a subtle parallax effect to hero section
-const hero = document.querySelector('.hero');
-if (hero) {
-    window.addEventListener('scroll', () => {
-        const scrolled = window.pageYOffset;
-        const rate = scrolled * 0.5;
-        hero.style.transform = `translate3d(0, ${rate}px, 0)`;
     });
 }
 
-// Console message
-console.log('%c Professional Website', 'color: #2563eb; font-size: 20px; font-weight: bold;');
-console.log('%c Dr. Wasundara Suvimali Dissanayake', 'color: #6b7280; font-size: 14px;');
-console.log('%c Senior Registrar in General Paediatrics', 'color: #6b7280; font-size: 12px;');
+const handleNavbarScroll = () => {
+    if (!navbar) return;
+
+    if (window.scrollY > 30) {
+        navbar.classList.add("scrolled");
+    } else {
+        navbar.classList.remove("scrolled");
+    }
+};
+
+window.addEventListener("scroll", handleNavbarScroll);
+handleNavbarScroll();
+
+const highlightNavigation = () => {
+    const scrollY = window.scrollY;
+
+    sections.forEach((section) => {
+        const sectionHeight = section.offsetHeight;
+        const sectionTop = section.offsetTop - 120;
+        const sectionId = section.getAttribute("id");
+        const navLink = document.querySelector(`.nav-menu a[href="#${sectionId}"]`);
+
+        if (!navLink) return;
+
+        if (scrollY >= sectionTop && scrollY < sectionTop + sectionHeight) {
+            navLink.classList.add("active");
+        } else {
+            navLink.classList.remove("active");
+        }
+    });
+};
+
+window.addEventListener("scroll", highlightNavigation);
+highlightNavigation();
+
+document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+    anchor.addEventListener("click", function (e) {
+        const href = this.getAttribute("href");
+        const target = document.querySelector(href);
+
+        if (!target) return;
+
+        e.preventDefault();
+
+        const navbarHeight = navbar ? navbar.offsetHeight : 0;
+        const offsetTop = target.offsetTop - navbarHeight - 10;
+
+        window.scrollTo({
+            top: offsetTop,
+            behavior: "smooth"
+        });
+    });
+});
+
+const revealElements = document.querySelectorAll(
+    ".timeline-item, .education-card, .course-card, .publication-item, .audit-item, .contact-item, .skills-column, .about-text, .info-card, .experience-note"
+);
+
+revealElements.forEach((el) => el.classList.add("reveal"));
+
+const revealObserver = new IntersectionObserver(
+    (entries, observer) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add("visible");
+                observer.unobserve(entry.target);
+            }
+        });
+    },
+    {
+        threshold: 0.12,
+        rootMargin: "0px 0px -40px 0px"
+    }
+);
+
+revealElements.forEach((el) => revealObserver.observe(el));
+
+const createScrollTopButton = () => {
+    const button = document.createElement("button");
+    button.innerHTML = "↑";
+    button.className = "scroll-top-btn";
+    button.setAttribute("aria-label", "Scroll to top");
+    document.body.appendChild(button);
+
+    const toggleScrollButton = () => {
+        if (window.scrollY > 320) {
+            button.classList.add("visible");
+        } else {
+            button.classList.remove("visible");
+        }
+    };
+
+    window.addEventListener("scroll", toggleScrollButton);
+    toggleScrollButton();
+
+    button.addEventListener("click", () => {
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+    });
+};
+
+createScrollTopButton();
+
+if (hero) {
+    window.addEventListener("scroll", () => {
+        const scrolled = window.scrollY;
+        const offset = Math.min(scrolled * 0.18, 60);
+        hero.style.backgroundPosition = `center ${offset}px`;
+    });
+}
+
+const footerYear = document.querySelector(".footer-year");
+if (footerYear) {
+    footerYear.textContent = new Date().getFullYear();
+}
+
+console.log("%cProfessional Portfolio Loaded", "font-size: 16px; font-weight: bold; color: #1d4ed8;");
+console.log("%cDr. Wasundara Suvimali Dissanayake", "font-size: 13px; color: #334155;");
